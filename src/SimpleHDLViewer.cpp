@@ -1,5 +1,7 @@
 #include "SimpleHDLViewer.h"
 
+#include <pcl/filters/passthrough.h>
+
 using namespace std;
 using namespace pcl;
 using namespace pcl::console;
@@ -24,6 +26,10 @@ void SimpleHDLViewer::run(){
 
   grabber_.start ();
 
+  int numFrame = 0;
+  Cloud::Ptr cloud_filtered (new Cloud);
+  PCLFilter pclFilter;
+
   while (!cloud_viewer_->wasStopped ())
   {
     CloudConstPtr cloud;
@@ -35,12 +41,23 @@ void SimpleHDLViewer::run(){
       cloud_mutex_.unlock ();
     }
 
+    bool bUpdate = false;
     if (cloud)
     {
       handler_.setInputCloud (cloud);
-      if (!cloud_viewer_->updatePointCloud (cloud, handler_, "HDL"))
-        cloud_viewer_->addPointCloud (cloud, handler_, "HDL");
 
+      //bUpdate = cloud_viewer_->updatePointCloud (cloud, handler_, "HDL");
+
+      pclFilter.passThroughFilter(cloud, cloud_filtered, "intensity", 0, 30);
+      bUpdate = cloud_viewer_ ->updatePointCloud (cloud_filtered, handler_, "HDL");
+
+      if (bUpdate){
+        numFrame ++;
+        printf("numFrames: %d\n", numFrame);
+      }
+      else{
+        cloud_viewer_ ->addPointCloud (cloud, handler_, "HDL");
+      }
       cloud_viewer_->spinOnce ();
     }
 
