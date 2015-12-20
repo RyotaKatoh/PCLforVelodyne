@@ -24,7 +24,6 @@ class SimpleHDLViewer
         grabber_ (grabber),
         handler_ (handler)
     {
-
     }
     void cloud_callback(const CloudConstPtr &cloud);
     void run();

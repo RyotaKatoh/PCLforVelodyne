@@ -31,6 +31,7 @@ void SimpleHDLViewer::run(){
     PCLFilter pclFilter;
     
     while (!cloud_viewer_->wasStopped ())
+
     {
         CloudConstPtr cloud;
         
@@ -75,4 +76,5 @@ void SimpleHDLViewer::run(){
     grabber_.stop ();
     
     cloud_connection.disconnect ();
+
 }
