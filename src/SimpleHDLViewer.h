@@ -5,6 +5,8 @@
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/console/parse.h>
 
+#include "PCLFilter.h"
+
 using namespace std;
 using namespace pcl;
 using namespace pcl::console;
@@ -22,9 +24,12 @@ class SimpleHDLViewer
         grabber_ (grabber),
         handler_ (handler)
     {
+
     }
     void cloud_callback(const CloudConstPtr &cloud);
     void run();
+
+    void passThroughFilter(const CloudConstPtr &cloud, Cloud::Ptr &cloud_filtered, string target, float lower_bound, float upper_bound);
 
     boost::shared_ptr<pcl::visualization::PCLVisualizer> cloud_viewer_;
 
