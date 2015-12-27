@@ -28,7 +28,12 @@ void SimpleHDLViewer::run(){
     
     int numFrame = 0;
     Cloud::Ptr cloud_filtered (new Cloud);
+    
+    // color cloud
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr color_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+    
     PCLFilter pclFilter;
+    PCLCluster pclCluster;
     
     while (!cloud_viewer_->wasStopped ())
 
@@ -46,15 +51,20 @@ void SimpleHDLViewer::run(){
         if (cloud)
         {
             handler_.setInputCloud (cloud);
+            *cloud_filtered = *cloud;
             
             //bUpdate = cloud_viewer_->updatePointCloud (cloud, handler_, "HDL");
             
             //pclFilter.passThroughFilter(cloud, cloud_filtered, "intensity", 0, 30);
             
-            pclFilter.noiseRemovalFilter(cloud, cloud_filtered);
+            //pclFilter.noiseRemovalFilter(cloud, cloud_filtered);
             
-            bUpdate = cloud_viewer_ ->updatePointCloud (cloud_filtered, handler_, "HDL");
-//            bUpdate = cloud_viewer_->updatePointCloud(cloud, handler_, "HDL");
+
+            color_cloud = pclCluster.createPCLCluster(cloud_filtered);
+            pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(color_cloud);
+            bUpdate = cloud_viewer_->updatePointCloud(color_cloud, rgb, "HDL");
+            
+//            bUpdate = cloud_viewer_ ->updatePointCloud (cloud_filtered, handler_, "HDL");
             
             if (bUpdate){
                 numFrame ++;
@@ -66,8 +76,11 @@ void SimpleHDLViewer::run(){
             cloud_viewer_->spinOnce ();
         }
         
-        if (!grabber_.isRunning ())
+        if (!grabber_.isRunning ()){
+            cout<<"grabber is not running..."<<endl;
             cloud_viewer_->spin ();
+            //grabber_.start();
+        }
         
         
         boost::this_thread::sleep (boost::posix_time::microseconds (100));

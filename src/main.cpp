@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SimpleHDLViewer.h>
+#include "SimpleHDLViewer.h"
 
 int main (int argc, char ** argv)
 {

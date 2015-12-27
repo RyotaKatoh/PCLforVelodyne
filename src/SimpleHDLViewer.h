@@ -6,6 +6,7 @@
 #include <pcl/console/parse.h>
 
 #include "PCLFilter.h"
+#include "PCLClustering.h"
 
 using namespace std;
 using namespace pcl;
@@ -37,4 +38,5 @@ class SimpleHDLViewer
 
     CloudConstPtr cloud_;
     pcl::visualization::PointCloudColorHandler<pcl::PointXYZI> &handler_;
+        
 };
